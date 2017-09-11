@@ -12,6 +12,7 @@ namespace Project_Neural_Selection_3
         public List<RectangleF> shape = new List<RectangleF>();
         public List<CreatureInputs> inputs = new List<CreatureInputs>();
         public Color color;
+        public int rotation = 0;
 
         //enums
         public enum CreatureInputs
@@ -20,9 +21,13 @@ namespace Project_Neural_Selection_3
         }
 
         //constructor
-        public Creature()
+        public Creature(int x, int y, List<RectangleF> shape, List<CreatureInputs> inputs, Color color)
         {
-
+            this.x = x;
+            this.y = y;
+            this.shape = shape;
+            this.inputs = inputs;
+            this.color = color;
         }
     }
 }

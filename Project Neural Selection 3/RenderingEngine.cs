@@ -7,7 +7,7 @@ namespace Project_Neural_Selection_3
     public class RenderingEngine
     {
         //define global variables
-
+        
 
         //constructor
         public RenderingEngine()
@@ -24,7 +24,7 @@ namespace Project_Neural_Selection_3
                 float baseX = c.x;
                 float baseY = c.y;
                 Brush brush = new SolidBrush(c.color);
-
+                
                 foreach (RectangleF r in c.shape)
                 {
                     g.FillEllipse(brush, baseX + r.X, baseY + r.Y, r.Width, r.Height);

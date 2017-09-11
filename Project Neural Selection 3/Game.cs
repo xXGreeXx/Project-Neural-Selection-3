@@ -12,10 +12,13 @@ namespace Project_Neural_Selection_3
 
         int physicsSpeed = 20;
         int baseAmountOfCreatures = 30;
+        public static Random r { get; } = new Random();
 
         public static List<Creature> creatures { get; set; } = new List<Creature>();
         public static int creatureSize { get; } = 5;
         public static int creatureMutationRate { get; } = 3;
+
+        public static float learningRate { get; } = 0.1F;
 
         //constructor
         public Game()
@@ -28,12 +31,26 @@ namespace Project_Neural_Selection_3
 
             renderTimer.Start();
             physicsTimer.Start();
+
+            startNewGame();
         }
 
         //start new game
         private void startNewGame()
         {
+            for (int i = 0; i < baseAmountOfCreatures; i++)
+            {
+                List<RectangleF> shape = new List<RectangleF>();
+                List<Creature.CreatureInputs> inputs = new List<Creature.CreatureInputs>();
 
+                for (int i2 = 0; i2 < r.Next(5, 20); i2++)
+                {
+                    shape.Add(new RectangleF(i2 + r.Next(1, 3), i2 + r.Next(1, 3), 3, 3));
+                }
+
+                Creature c = new Creature((canvas.Width / baseAmountOfCreatures) * i, r.Next(30, canvas.Height), shape, inputs, Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
+                creatures.Add(c);
+            }
         }
 
         //render timer tick
