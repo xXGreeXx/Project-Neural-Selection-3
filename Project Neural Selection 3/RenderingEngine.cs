@@ -21,6 +21,9 @@ namespace Project_Neural_Selection_3
             //draw creatures
             foreach (Creature c in Game.creatures)
             {
+                float rotationX = (float)(Math.Cos(c.rotation) * Game.creatureSize);
+                float rotationY = (float)(Math.Cos(c.rotation) * Game.creatureSize);
+
                 float baseX = c.x;
                 float baseY = c.y;
                 Brush brush = new SolidBrush(c.color);

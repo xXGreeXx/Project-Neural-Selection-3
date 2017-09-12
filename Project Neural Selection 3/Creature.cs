@@ -60,10 +60,17 @@ namespace Project_Neural_Selection_3
             Boolean remove = false;
 
             //get sensory input
-
+            List<int> sensoryInput = new List<int>();
+            foreach (CreatureInputs input in inputs)
+            {
+                if (input == CreatureInputs.Eye)
+                {
+                    
+                }
+            }
 
             //simulate neural network
-
+            
 
             //train neural network
 
@@ -79,7 +86,7 @@ namespace Project_Neural_Selection_3
         }
 
 
-        private Color getInputFromEye()
+        private Color getInputFromEye(int xOfEye, int yOfEye)
         {
             Color c = Color.Red;
 
