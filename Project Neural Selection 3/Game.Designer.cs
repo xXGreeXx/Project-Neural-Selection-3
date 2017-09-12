@@ -33,7 +33,9 @@
             this.canvas = new System.Windows.Forms.PictureBox();
             this.renderTimer = new System.Windows.Forms.Timer(this.components);
             this.physicsTimer = new System.Windows.Forms.Timer(this.components);
+            this.creatureStatsCanvas = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.creatureStatsCanvas)).BeginInit();
             this.SuspendLayout();
             // 
             // canvas
@@ -55,16 +57,27 @@
             // 
             this.physicsTimer.Tick += new System.EventHandler(this.physicsTimer_Tick);
             // 
+            // creatureStatsCanvas
+            // 
+            this.creatureStatsCanvas.Location = new System.Drawing.Point(1065, 288);
+            this.creatureStatsCanvas.Name = "creatureStatsCanvas";
+            this.creatureStatsCanvas.Size = new System.Drawing.Size(269, 455);
+            this.creatureStatsCanvas.TabIndex = 1;
+            this.creatureStatsCanvas.TabStop = false;
+            this.creatureStatsCanvas.Paint += new System.Windows.Forms.PaintEventHandler(this.creatureStatsCanvas_Paint);
+            // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1296, 743);
+            this.ClientSize = new System.Drawing.Size(1332, 743);
+            this.Controls.Add(this.creatureStatsCanvas);
             this.Controls.Add(this.canvas);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Game";
             this.Text = "Project: Neural Selection 3";
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.creatureStatsCanvas)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -74,6 +87,7 @@
         private System.Windows.Forms.PictureBox canvas;
         private System.Windows.Forms.Timer renderTimer;
         private System.Windows.Forms.Timer physicsTimer;
+        private System.Windows.Forms.PictureBox creatureStatsCanvas;
     }
 }
 

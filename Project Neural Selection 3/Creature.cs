@@ -13,6 +13,7 @@ namespace Project_Neural_Selection_3
         public List<CreatureInputs> inputs = new List<CreatureInputs>();
         public Color color;
         public int rotation = 0;
+        List<Perceptron>[] neuralNetwork;
 
         //enums
         public enum CreatureInputs
@@ -28,6 +29,62 @@ namespace Project_Neural_Selection_3
             this.shape = shape;
             this.inputs = inputs;
             this.color = color;
+
+            //create neural network
+            neuralNetwork = new List<Perceptron>[4];
+            neuralNetwork[0] = new List<Perceptron>();
+            neuralNetwork[1] = new List<Perceptron>();
+            neuralNetwork[2] = new List<Perceptron>();
+            neuralNetwork[3] = new List<Perceptron>();
+
+            int baseLayer = inputs.Count;
+            for (int i = 0; i < baseLayer; i++)
+            {
+                neuralNetwork[0].Add(new Perceptron(baseLayer, baseLayer * 2));
+            }
+
+            for (int i = 0; i < baseLayer * 2; i++)
+            {
+                neuralNetwork[1].Add(new Perceptron(baseLayer, baseLayer * 2));
+                neuralNetwork[2].Add(new Perceptron(baseLayer * 2, 3));
+            }
+
+            neuralNetwork[3].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[3].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[3].Add(new Perceptron(baseLayer * 2, 1));
+        }
+
+        //simulate creature
+        public Boolean SimulateCreature()
+        {
+            Boolean remove = false;
+
+            //get sensory input
+
+
+            //simulate neural network
+
+
+            //train neural network
+
+
+            //move creaure based on output from neural network
+
+            
+            //handle hitbox with food/other creautres
+
+
+            //return wheather or not to remove creature
+            return remove;
+        }
+
+
+        private Color getInputFromEye()
+        {
+            Color c = Color.Red;
+
+
+            return c;
         }
     }
 }

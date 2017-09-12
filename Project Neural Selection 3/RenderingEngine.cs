@@ -30,6 +30,12 @@ namespace Project_Neural_Selection_3
                     g.FillEllipse(brush, baseX + r.X, baseY + r.Y, r.Width, r.Height);
                 }
             }
+
+            //draw food
+            foreach (Food food in Game.food)
+            {
+                g.FillRectangle(Brushes.Green, food.x, food.y, 3, 3);
+            }
         }
     }
 }
