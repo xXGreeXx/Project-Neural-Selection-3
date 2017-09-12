@@ -24,10 +24,37 @@ namespace Project_Neural_Selection_3
                 float baseX = c.x;
                 float baseY = c.y;
                 Brush brush = new SolidBrush(c.color);
-                
-                foreach (RectangleF r in c.shape)
+
+                float sizeX = Game.creatureSize;
+                float sizeY = Game.creatureSize;
+
+                g.FillEllipse(brush, baseX, baseY, sizeX, sizeY);
+
+                int index = 0;
+                foreach (int[] position in c.locationOfInputOnCreature)
                 {
-                    g.FillEllipse(brush, baseX + r.X, baseY + r.Y, r.Width, r.Height);
+                    if (c.inputs[index] == Creature.CreatureInputs.Eye)
+                    {
+                        g.FillEllipse(Brushes.White, baseX + position[0], baseY + position[1], 3, 3);
+                    }
+
+                    index++;
+                }
+
+                if (Game.creatures.IndexOf(c) == Game.selectedCreature)
+                {
+                    g.DrawRectangle(Pens.White, baseX, baseY, sizeX, sizeY);
+                }
+
+                if (MouseHandler.down)
+                {
+                    if (MouseHandler.x >= baseX && MouseHandler.x <= baseX + sizeX)
+                    {
+                        if (MouseHandler.y >= baseY && MouseHandler.y <= baseY + sizeY)
+                        {
+                            Game.selectedCreature = Game.creatures.IndexOf(c);
+                        }
+                    }
                 }
             }
 

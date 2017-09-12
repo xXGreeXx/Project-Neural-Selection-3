@@ -9,6 +9,7 @@ namespace Project_Neural_Selection_3
     {
         //define global variables
         public static RenderingEngine renderer { get; } = new RenderingEngine();
+        public static MouseHandler mouse { get; set; } = new MouseHandler();
 
         int physicsSpeed = 20;
         int baseAmountOfCreatures = 30;
@@ -17,12 +18,12 @@ namespace Project_Neural_Selection_3
         public static List<Food> food = new List<Food>();
 
         public static List<Creature> creatures { get; set; } = new List<Creature>();
-        public static int creatureSize { get; } = 5;
+        public static int creatureSize { get; } = 15;
         public static int creatureMutationRate { get; } = 3;
 
         public static float learningRate { get; } = 0.1F;
         public static Random r { get; } = new Random();
-        int selectedCreature = -1;
+        public static int selectedCreature { get; set; } = 0;
 
         //constructor
         public Game()
@@ -51,15 +52,16 @@ namespace Project_Neural_Selection_3
             //create creatures
             for (int i = 0; i < baseAmountOfCreatures; i++)
             {
-                List<RectangleF> shape = new List<RectangleF>();
                 List<Creature.CreatureInputs> inputs = new List<Creature.CreatureInputs>();
+                List<int[]> locationOfInputOnCreature = new List<int[]>();
 
-                for (int i2 = 0; i2 < r.Next(5, 20); i2++)
-                {
-                    shape.Add(new RectangleF(i2 + r.Next(1, 3), i2 + r.Next(1, 3), creatureSize, creatureSize));
-                }
+                inputs.Add(Creature.CreatureInputs.Eye);
+                inputs.Add(Creature.CreatureInputs.Eye);
 
-                Creature c = new Creature((canvas.Width / baseAmountOfCreatures) * i, r.Next(30, canvas.Height), shape, inputs, Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
+                locationOfInputOnCreature.Add(new int[] { 2, 0 } );
+                locationOfInputOnCreature.Add(new int[] { 10, 0 } );
+
+                Creature c = new Creature((canvas.Width / baseAmountOfCreatures) * i, r.Next(30, canvas.Height), inputs, locationOfInputOnCreature, Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
                 creatures.Add(c);
             }
         }
@@ -91,7 +93,25 @@ namespace Project_Neural_Selection_3
 
             if (selectedCreature != -1 && selectedCreature < creatures.Count)
             {
-                //draw state of neural network
+                Creature c = creatures[selectedCreature];
+                List<Perceptron>[] neuralNetwork = c.neuralNetwork;
+
+                int y = height / 2;
+                for (int layerIndex = 0; layerIndex < neuralNetwork.Length; layerIndex++)
+                {
+                    List<Perceptron> layer = neuralNetwork[layerIndex];
+
+                    int x = width / 2 - (layer.Count * 30) / 2;
+
+                    foreach (Perceptron p in layer)
+                    {
+                        g.FillRectangle(Brushes.DarkGray, x, y, 20, 20);
+
+                        x += 30;
+                    }
+
+                    y += 40;
+                }
             }
         }
 
@@ -124,5 +144,16 @@ namespace Project_Neural_Selection_3
             }
         }
 
+        //canvas mouse down handler
+        private void canvas_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouse.RegisterMouseDown(e.X, e.Y, e.Button);
+        }
+
+        //canvas mouse up handler
+        private void canvas_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouse.RegisterMouseUp(e.X, e.Y, e.Button);
+        }
     }
 }
