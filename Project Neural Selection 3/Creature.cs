@@ -57,8 +57,10 @@ namespace Project_Neural_Selection_3
         }
 
         //simulate creature
-        public Boolean SimulateCreature()
+        public Boolean SimulateCreature(int width, int height)
         {
+            int target = 1;
+
             //creature needs
             food--;
             if (food <= 0)
@@ -106,21 +108,18 @@ namespace Project_Neural_Selection_3
 
             finalOutputs = outputsFromLastLayer;
 
-            //train neural network
-
-
             //move creaure based on output from neural network
             int rotateLeft = (int)finalOutputs[0];
             int move = (int)finalOutputs[1];
             int rotateRight = (int)finalOutputs[2];
-
+            
             if (rotateLeft == 1)
             {
-                rotation -= 10;
+                rotation -= 3;
             }
             if(rotateRight == 1)
             {
-                rotation += 10;
+                rotation += 3;
             }
             if (move == 1)
             {
@@ -130,6 +129,7 @@ namespace Project_Neural_Selection_3
                 x += Game.creatureSpeed * rotationX;
                 y += Game.creatureSpeed * rotationY;
             }
+
             //handle hitbox with food/other creautres/walls
             RectangleF creatureHitbox = new RectangleF(x, y, Game.creatureSize, Game.creatureSize);
 
@@ -142,8 +142,13 @@ namespace Project_Neural_Selection_3
 
                 if (creatureHitbox.IntersectsWith(foodHitbox))
                 {
+                    target = 1;
                     food += 15;
                     foodToRemove.Add(Game.food.IndexOf(f));
+                }
+                else
+                {
+                    target = -1;
                 }
             }
 
@@ -153,6 +158,36 @@ namespace Project_Neural_Selection_3
             foreach (int index in foodToRemove)
             {
                 Game.food.RemoveAt(index);
+            }
+
+            //wall
+            if (x <= 0) x = 0;
+            if (x >= width - Game.creatureSize) x = width - Game.creatureSize;
+            if (y <= 0) y = 0;
+            if (y >= height - Game.creatureSize) y = height - Game.creatureSize;
+
+            //train neural network
+            outputsFromLastLayer = new float[sensoryInput.Count];
+            for (int i = 0; i < sensoryInput.Count; i++)
+            {
+                outputsFromLastLayer[i] = 1;
+            }
+
+            foreach (List<Perceptron> layer in neuralNetwork)
+            {
+                float[] outputsFromLastLayerBuffer = new float[layer.Count];
+
+                for (int index = 0; index < layer.Count; index++)
+                {
+                    Perceptron p = layer[index];
+
+                    float returnValue = p.output(outputsFromLastLayer);
+                    p.train(outputsFromLastLayer, target);
+
+                    outputsFromLastLayerBuffer[index] = returnValue;
+                }
+
+                outputsFromLastLayer = outputsFromLastLayerBuffer;
             }
 
             //return wheather or not to remove creature

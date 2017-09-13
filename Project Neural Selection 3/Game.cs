@@ -22,7 +22,7 @@ namespace Project_Neural_Selection_3
         public static int creatureMutationRate { get; } = 3;
         public static int creatureSpeed { get; } = 5;
 
-        public static float learningRate { get; } = 0.1F;
+        public static float learningRate { get; } = 0.01F;
         public static Random r { get; } = new Random();
         public static int selectedCreature { get; set; } = 0;
 
@@ -56,11 +56,11 @@ namespace Project_Neural_Selection_3
                 List<Creature.CreatureInputs> inputs = new List<Creature.CreatureInputs>();
                 List<int> rotationOfInput = new List<int>();
 
-                inputs.Add(Creature.CreatureInputs.Eye);
-                inputs.Add(Creature.CreatureInputs.Eye);
-
-                rotationOfInput.Add(0);
-                rotationOfInput.Add(90);
+                for (int i2 = 0; i2 < r.Next(1, 5); i2++)
+                {
+                    inputs.Add(Creature.CreatureInputs.Eye);
+                    rotationOfInput.Add(r.Next(0, 361));
+                }
 
                 Creature c = new Creature((canvas.Width / baseAmountOfCreatures) * i, r.Next(30, canvas.Height), inputs, rotationOfInput, Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
                 creatures.Add(c);
@@ -73,6 +73,7 @@ namespace Project_Neural_Selection_3
             physicsTimer.Interval = 1000 / physicsSpeed;
 
             canvas.Refresh();
+            creatureStatsCanvas.Refresh();
         }
 
         //canvas update
@@ -91,6 +92,7 @@ namespace Project_Neural_Selection_3
             Graphics g = e.Graphics;
             int width = creatureStatsCanvas.Width;
             int height = creatureStatsCanvas.Height;
+            Font fontSmall = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
 
             if (selectedCreature != -1 && selectedCreature < creatures.Count)
             {
@@ -107,6 +109,13 @@ namespace Project_Neural_Selection_3
                     foreach (Perceptron p in layer)
                     {
                         g.FillRectangle(Brushes.DarkGray, x, y, 20, 20);
+
+                        int x2 = width / 2 - (p.outputs * 30) / 2;
+                        for (int i = 0; i < p.outputs; i++)
+                        {
+                            g.DrawLine(Pens.Black, x + 10, y + 20, x2 + (i * 30) + 10, y + 40);
+                            g.DrawString(Math.Round(p.weights[0], 1).ToString(), fontSmall, Brushes.Black, x, y);
+                        }
 
                         x += 30;
                     }
@@ -130,7 +139,7 @@ namespace Project_Neural_Selection_3
 
             foreach (Creature c in creatures)
             {
-                Boolean remove = c.SimulateCreature();
+                Boolean remove = c.SimulateCreature(canvas.Width, canvas.Height);
 
                 if (remove) creaturesToRemove.Add(creatures.IndexOf(c));
             }
@@ -142,6 +151,12 @@ namespace Project_Neural_Selection_3
             foreach (int index in creaturesToRemove)
             {
                 creatures.RemoveAt(index);
+            }
+
+            //start new game if neccesary
+            if (creatures.Count == 0)
+            {
+                startNewGame();
             }
         }
 
