@@ -110,10 +110,18 @@ namespace Project_Neural_Selection_3
                     {
                         g.FillRectangle(Brushes.DarkGray, x, y, 20, 20);
 
-                        int x2 = width / 2 - (p.outputs * 30) / 2;
-                        for (int i = 0; i < p.outputs; i++)
+                        int x2 = width / 2 - (p.weights.Length * 30) / 2;
+                        for (int i = 0; i < p.weights.Length; i++)
                         {
-                            g.DrawLine(Pens.Black, x + 10, y + 20, x2 + (i * 30) + 10, y + 40);
+                            if (layerIndex > 0)
+                            {
+                                if (p.weights[i] < 0) g.DrawLine(Pens.Black, x + 10, y, x2 + (i * 30) + 10, y - 25);
+                                else g.DrawLine(Pens.White, x + 10, y, x2 + (i * 30) + 10, y - 25);
+                            }
+                            else
+                            {
+                                g.DrawLine(Pens.Black, x + 10, y + 20, x2 + (i * 30) + 10, y + 40);
+                            }
                             g.DrawString(Math.Round(p.weights[0], 1).ToString(), fontSmall, Brushes.Black, x, y);
                         }
 

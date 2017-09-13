@@ -16,7 +16,7 @@ namespace Project_Neural_Selection_3
 
             for (int i = 0; i < weights.Length; i++)
             {
-                weights[i] = Game.r.Next(-3, 3);
+                weights[i] = (float)Game.r.NextDouble() * Game.r.Next(-1, 2);
             }
 
             this.outputs = outputs;

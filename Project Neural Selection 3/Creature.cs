@@ -99,7 +99,7 @@ namespace Project_Neural_Selection_3
 
                             if (number <= Game.creatureMutationRate)
                             {
-                                copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = Game.r.Next(-3, 3);
+                                copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = Game.r.Next(-1, 1);
                             }
                             else
                             {
@@ -261,7 +261,13 @@ namespace Project_Neural_Selection_3
             int index = 0;
             foreach (Rectangle hitbox in sortRectanglesAroundPoint(objects, new Point((int)xOfEye, (int)yOfEye)))
             {
-                Boolean linePassedObject = LineIntersectsRect(new Point((int)x + (int)selfRotationX, (int)y + (int)selfRotationY), new Point((int)x + (int)selfRotationX * 10, (int)y + (int)selfRotationY * 10), hitbox);
+                float rotationX = (float)Math.Cos(selfRotationX) * 10 * Game.creatureSize / 2;
+                float rotationY = (float)Math.Sin(selfRotationY) * 10 * Game.creatureSize / 2;
+
+                Point baseOfRay = new Point((int)x + (int)selfRotationX, (int)y + (int)selfRotationY);
+                Point endOfRay = new Point((int)(x + selfRotationX + rotationX), (int)(y + selfRotationY + rotationY));
+
+                Boolean linePassedObject = LineIntersectsRect(baseOfRay, endOfRay, hitbox);
 
                 if (linePassedObject)
                 {

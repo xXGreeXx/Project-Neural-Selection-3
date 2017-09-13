@@ -61,6 +61,7 @@
             // 
             // creatureStatsCanvas
             // 
+            this.creatureStatsCanvas.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.creatureStatsCanvas.Location = new System.Drawing.Point(1062, 0);
             this.creatureStatsCanvas.Name = "creatureStatsCanvas";
             this.creatureStatsCanvas.Size = new System.Drawing.Size(272, 743);
