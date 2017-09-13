@@ -24,7 +24,7 @@ namespace Project_Neural_Selection_3
         }
 
         //constructor
-        public Creature(int x, int y, List<CreatureInputs> inputs, List<int> rotationOfInput, Color color)
+        public Creature(float x, float y, List<CreatureInputs> inputs, List<int> rotationOfInput, Color color)
         {
             this.x = x;
             this.y = y;
@@ -33,11 +33,13 @@ namespace Project_Neural_Selection_3
             this.color = color;
 
             //create neural network
-            neuralNetwork = new List<Perceptron>[4];
+            neuralNetwork = new List<Perceptron>[6];
             neuralNetwork[0] = new List<Perceptron>();
             neuralNetwork[1] = new List<Perceptron>();
             neuralNetwork[2] = new List<Perceptron>();
             neuralNetwork[3] = new List<Perceptron>();
+            neuralNetwork[4] = new List<Perceptron>();
+            neuralNetwork[5] = new List<Perceptron>();
 
             int baseLayer = inputs.Count;
             for (int i = 0; i < baseLayer; i++)
@@ -48,18 +50,26 @@ namespace Project_Neural_Selection_3
             for (int i = 0; i < baseLayer * 2; i++)
             {
                 neuralNetwork[1].Add(new Perceptron(baseLayer, baseLayer * 2));
-                neuralNetwork[2].Add(new Perceptron(baseLayer * 2, 3));
+                neuralNetwork[4].Add(new Perceptron(baseLayer * 2 + 1, 3));
             }
 
-            neuralNetwork[3].Add(new Perceptron(baseLayer * 2, 1));
-            neuralNetwork[3].Add(new Perceptron(baseLayer * 2, 1));
-            neuralNetwork[3].Add(new Perceptron(baseLayer * 2, 1));
+            for (int i = 0; i < baseLayer * 2 + 1; i++)
+            {
+                neuralNetwork[2].Add(new Perceptron(baseLayer * 2, baseLayer * 2 + 1));
+                neuralNetwork[3].Add(new Perceptron(baseLayer * 2 + 1, 3));
+            }
+
+            neuralNetwork[5].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[5].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[5].Add(new Perceptron(baseLayer * 2, 1));
         }
 
         //simulate creature
-        public Boolean SimulateCreature(int width, int height)
+        public Boolean SimulateCreature(int width, int height, out List<Creature> creaturesToAdd)
         {
             int target = 1;
+
+            creaturesToAdd = new List<Creature>();
 
             //creature needs
             food--;
@@ -69,12 +79,34 @@ namespace Project_Neural_Selection_3
             }
 
             //mitosis
-            if (food >= 100)
+            if (food >= 50)
             {
                 food /= 2;
-                Creature copy = this;
+                Creature copy = new Creature(x - Game.creatureSize, y - Game.creatureSize, inputs, rotationOfInput, color);
 
-                //Game.creatures.Add(copy);
+                for (int layerIndex = 0; layerIndex < copy.neuralNetwork.Length; layerIndex++)
+                {
+                    List<Perceptron> layer = copy.neuralNetwork[layerIndex];
+
+                    for (int perceptronIndex = 0; perceptronIndex < layer.Count; perceptronIndex++)
+                    {
+                        for (int weightIndex = 0; weightIndex < layer[perceptronIndex].weights.Length; weightIndex++)
+                        {
+                            int number = Game.r.Next(1, 101);
+
+                            if (number <= Game.creatureMutationRate)
+                            {
+                                copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = Game.r.Next(-3, 3);
+                            }
+                            else
+                            {
+                                copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex];
+                            }
+                        }
+                    }
+                } 
+
+                creaturesToAdd.Add(copy);
             }
 
             //get sensory input
@@ -150,22 +182,20 @@ namespace Project_Neural_Selection_3
 
             //food
             List<int> foodToRemove = new List<int>();
-
+            Boolean gotFood = false;
             foreach (Food f in Game.food)
             {
                 RectangleF foodHitbox = new RectangleF(f.x, f.y, 3, 3);
 
                 if (creatureHitbox.IntersectsWith(foodHitbox))
                 {
-                    target = 1;
+                    gotFood = true;
                     food += 15;
                     foodToRemove.Add(Game.food.IndexOf(f));
                 }
-                else
-                {
-                    target = -1;
-                }
             }
+
+            if (!gotFood) target = -1;
 
             foodToRemove.Sort();
             foodToRemove.Reverse();

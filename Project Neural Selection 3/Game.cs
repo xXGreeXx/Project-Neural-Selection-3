@@ -136,10 +136,14 @@ namespace Project_Neural_Selection_3
         {
             //simulate creatures
             List<int> creaturesToRemove = new List<int>();
+            List<Creature> creaturesToAdd = new List<Creature>();
 
             foreach (Creature c in creatures)
             {
-                Boolean remove = c.SimulateCreature(canvas.Width, canvas.Height);
+                List<Creature> creaturesToAddBuffer = new List<Creature>();
+                Boolean remove = c.SimulateCreature(canvas.Width, canvas.Height, out creaturesToAdd);
+
+                foreach(Creature c2 in creaturesToAddBuffer) { creaturesToAdd.Add(c2); }
 
                 if (remove) creaturesToRemove.Add(creatures.IndexOf(c));
             }
@@ -148,9 +152,20 @@ namespace Project_Neural_Selection_3
             creaturesToRemove.Sort();
             creaturesToRemove.Reverse();
 
+            Creature oldCreatureSelected = creatures[0];
+            if (selectedCreature <= creatures.Count && selectedCreature != -1) oldCreatureSelected = creatures[selectedCreature];
+
             foreach (int index in creaturesToRemove)
             {
                 creatures.RemoveAt(index);
+            }
+
+            selectedCreature = creatures.IndexOf(oldCreatureSelected);
+
+            //add new creatures
+            foreach (Creature c in creaturesToAdd)
+            {
+                creatures.Add(c);
             }
 
             //start new game if neccesary
