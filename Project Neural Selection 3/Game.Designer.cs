@@ -61,9 +61,9 @@
             // 
             // creatureStatsCanvas
             // 
-            this.creatureStatsCanvas.Location = new System.Drawing.Point(1065, 288);
+            this.creatureStatsCanvas.Location = new System.Drawing.Point(1062, 0);
             this.creatureStatsCanvas.Name = "creatureStatsCanvas";
-            this.creatureStatsCanvas.Size = new System.Drawing.Size(269, 455);
+            this.creatureStatsCanvas.Size = new System.Drawing.Size(272, 743);
             this.creatureStatsCanvas.TabIndex = 1;
             this.creatureStatsCanvas.TabStop = false;
             this.creatureStatsCanvas.Paint += new System.Windows.Forms.PaintEventHandler(this.creatureStatsCanvas_Paint);

@@ -68,17 +68,32 @@ namespace Project_Neural_Selection_3
                 return true;
             }
 
+            //mitosis
+            if (food >= 100)
+            {
+                food /= 2;
+                Creature copy = this;
+
+                //Game.creatures.Add(copy);
+            }
+
             //get sensory input
             List<int> sensoryInput = new List<int>();
+            int indexOfInput = 0;
+
             foreach (CreatureInputs input in inputs)
             {
+                float selfRotationX = (float)(Math.Cos(rotation + rotationOfInput[indexOfInput]) * Game.creatureSize / 2) + Game.creatureSize / 2;
+                float selfRotationY = (float)(Math.Sin(rotation + rotationOfInput[indexOfInput]) * Game.creatureSize / 2) + Game.creatureSize / 2;
+                float inputX = x + selfRotationX;
+                float inputY = y + selfRotationY;
+
                 if (input == CreatureInputs.Eye)
                 {
-                    int eyeX = 0;
-                    int eyeY = 0;
-
-                    sensoryInput.Add(getInputFromEye(eyeX, eyeY).ToArgb());
+                    sensoryInput.Add(getInputFromEye(inputX, inputY, rotationOfInput[inputs.IndexOf(input)]).ToArgb());
                 }
+
+                indexOfInput++;
             }
 
             //simulate neural network
@@ -126,8 +141,8 @@ namespace Project_Neural_Selection_3
                 float rotationX = (float)Math.Cos(rotation);
                 float rotationY = (float)Math.Sin(rotation);
 
-                x += Game.creatureSpeed * rotationX;
-                y += Game.creatureSpeed * rotationY;
+                x -= Game.creatureSpeed * rotationX;
+                y -= Game.creatureSpeed * rotationY;
             }
 
             //handle hitbox with food/other creautres/walls
@@ -194,13 +209,71 @@ namespace Project_Neural_Selection_3
             return false;
         }
 
-
-        private Color getInputFromEye(int xOfEye, int yOfEye)
+        //get sensory inputs
+        private Color getInputFromEye(float xOfEye, float yOfEye, int rotationOfEye)
         {
-            Color c = Color.Red;
+            Color colorToReturn = Color.White;
 
+            float rotationX = (float)(Math.Cos(rotation) * 30);
+            float rotationY = (float)(Math.Sin(rotation) * 30);
 
-            return c;
+            //define lists of objects/colors to check
+            List<Rectangle> objects = new List<Rectangle>();
+            List<Color> matchingColors = new List<Color>();
+
+            //add food to objects
+            foreach(Food f in Game.food) { objects.Add(new Rectangle(f.x, f.y, 3, 3)); matchingColors.Add(Color.Green); }
+            foreach (Creature c in Game.creatures) { objects.Add(new Rectangle((int)c.x, (int)c.y, 3, 3)); matchingColors.Add(c.color); }
+
+            int index = 0;
+            foreach (Rectangle hitbox in objects)
+            {
+                Boolean linePassedObject = LineIntersectsRect(new Point((int)xOfEye, (int)yOfEye), new Point((int)xOfEye + (int)rotationX, (int)yOfEye + (int)rotationY), hitbox);
+
+                if (linePassedObject)
+                {
+                    colorToReturn = matchingColors[index];
+                    break;
+                }
+
+                index++;
+            }
+
+            return colorToReturn;
+        }
+
+        //line intersects rectangle
+        public static bool LineIntersectsRect(Point p1, Point p2, Rectangle r)
+        {
+            return LineIntersectsLine(p1, p2, new Point(r.X, r.Y), new Point(r.X + r.Width, r.Y)) ||
+                   LineIntersectsLine(p1, p2, new Point(r.X + r.Width, r.Y), new Point(r.X + r.Width, r.Y + r.Height)) ||
+                   LineIntersectsLine(p1, p2, new Point(r.X + r.Width, r.Y + r.Height), new Point(r.X, r.Y + r.Height)) ||
+                   LineIntersectsLine(p1, p2, new Point(r.X, r.Y + r.Height), new Point(r.X, r.Y)) ||
+                   (r.Contains(p1) && r.Contains(p2));
+        }
+
+        //line intersects line
+        private static bool LineIntersectsLine(Point l1p1, Point l1p2, Point l2p1, Point l2p2)
+        {
+            float q = (l1p1.Y - l2p1.Y) * (l2p2.X - l2p1.X) - (l1p1.X - l2p1.X) * (l2p2.Y - l2p1.Y);
+            float d = (l1p2.X - l1p1.X) * (l2p2.Y - l2p1.Y) - (l1p2.Y - l1p1.Y) * (l2p2.X - l2p1.X);
+
+            if (d == 0)
+            {
+                return false;
+            }
+
+            float r = q / d;
+
+            q = (l1p1.Y - l2p1.Y) * (l1p2.X - l1p1.X) - (l1p1.X - l2p1.X) * (l1p2.Y - l1p1.Y);
+            float s = q / d;
+
+            if (r < 0 || r > 1 || s < 0 || s > 1)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
