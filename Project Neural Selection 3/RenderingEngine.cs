@@ -21,24 +21,21 @@ namespace Project_Neural_Selection_3
             //draw creatures
             foreach (Creature c in Game.creatures)
             {
-                float rotationX = (float)(Math.Cos(c.rotation) * Game.creatureSize);
-                float rotationY = (float)(Math.Cos(c.rotation) * Game.creatureSize);
-
                 float baseX = c.x;
                 float baseY = c.y;
                 Brush brush = new SolidBrush(c.color);
 
-                float sizeX = Game.creatureSize;
-                float sizeY = Game.creatureSize;
-
-                g.FillEllipse(brush, baseX, baseY, sizeX, sizeY);
+                g.FillEllipse(brush, baseX, baseY, Game.creatureSize, Game.creatureSize);
 
                 int index = 0;
-                foreach (int[] position in c.locationOfInputOnCreature)
+                foreach (int rotation in c.rotationOfInput)
                 {
+                    float selfRotationX = (float)(Math.Cos(rotation + c.rotation) * Game.creatureSize / 2) + Game.creatureSize / 2;
+                    float selfRotationY = (float)(Math.Sin(rotation + c.rotation) * Game.creatureSize / 2) + Game.creatureSize / 2;
+
                     if (c.inputs[index] == Creature.CreatureInputs.Eye)
                     {
-                        g.FillEllipse(Brushes.White, baseX + position[0], baseY + position[1], 3, 3);
+                        g.FillEllipse(Brushes.White, baseX + selfRotationX, baseY + selfRotationY, 3, 3);
                     }
 
                     index++;
@@ -46,14 +43,14 @@ namespace Project_Neural_Selection_3
 
                 if (Game.creatures.IndexOf(c) == Game.selectedCreature)
                 {
-                    g.DrawRectangle(Pens.White, baseX, baseY, sizeX, sizeY);
+                    g.DrawRectangle(Pens.White, baseX, baseY, Game.creatureSize, Game.creatureSize);
                 }
 
                 if (MouseHandler.down)
                 {
-                    if (MouseHandler.x >= baseX && MouseHandler.x <= baseX + sizeX)
+                    if (MouseHandler.x >= baseX && MouseHandler.x <= baseX + Game.creatureSize)
                     {
-                        if (MouseHandler.y >= baseY && MouseHandler.y <= baseY + sizeY)
+                        if (MouseHandler.y >= baseY && MouseHandler.y <= baseY + Game.creatureSize)
                         {
                             Game.selectedCreature = Game.creatures.IndexOf(c);
                         }

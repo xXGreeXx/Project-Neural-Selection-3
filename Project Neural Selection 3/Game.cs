@@ -20,6 +20,7 @@ namespace Project_Neural_Selection_3
         public static List<Creature> creatures { get; set; } = new List<Creature>();
         public static int creatureSize { get; } = 15;
         public static int creatureMutationRate { get; } = 3;
+        public static int creatureSpeed { get; } = 5;
 
         public static float learningRate { get; } = 0.1F;
         public static Random r { get; } = new Random();
@@ -53,15 +54,15 @@ namespace Project_Neural_Selection_3
             for (int i = 0; i < baseAmountOfCreatures; i++)
             {
                 List<Creature.CreatureInputs> inputs = new List<Creature.CreatureInputs>();
-                List<int[]> locationOfInputOnCreature = new List<int[]>();
+                List<int> rotationOfInput = new List<int>();
 
                 inputs.Add(Creature.CreatureInputs.Eye);
                 inputs.Add(Creature.CreatureInputs.Eye);
 
-                locationOfInputOnCreature.Add(new int[] { 2, 0 } );
-                locationOfInputOnCreature.Add(new int[] { 10, 0 } );
+                rotationOfInput.Add(0);
+                rotationOfInput.Add(90);
 
-                Creature c = new Creature((canvas.Width / baseAmountOfCreatures) * i, r.Next(30, canvas.Height), inputs, locationOfInputOnCreature, Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
+                Creature c = new Creature((canvas.Width / baseAmountOfCreatures) * i, r.Next(30, canvas.Height), inputs, rotationOfInput, Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
                 creatures.Add(c);
             }
         }

@@ -32,7 +32,7 @@ namespace Project_Neural_Selection_3
                 answer += (inputs[i] * weights[i]);
             }
 
-            return answer;
+            return activation(answer);
         }
 
         //define activation function

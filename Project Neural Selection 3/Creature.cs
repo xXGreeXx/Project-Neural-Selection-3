@@ -10,10 +10,12 @@ namespace Project_Neural_Selection_3
         public float x;
         public float y;
         public List<CreatureInputs> inputs = new List<CreatureInputs>();
-        public List<int[]> locationOfInputOnCreature = new List<int[]>();
+        public List<int> rotationOfInput = new List<int>();
         public Color color;
-        public int rotation = 0;
+        public float rotation = 0;
         public List<Perceptron>[] neuralNetwork;
+
+        public int food { get; set; } = 50;
 
         //enums
         public enum CreatureInputs
@@ -22,12 +24,12 @@ namespace Project_Neural_Selection_3
         }
 
         //constructor
-        public Creature(int x, int y, List<CreatureInputs> inputs, List<int[]> locationOfInputOnCreature, Color color)
+        public Creature(int x, int y, List<CreatureInputs> inputs, List<int> rotationOfInput, Color color)
         {
             this.x = x;
             this.y = y;
             this.inputs = inputs;
-            this.locationOfInputOnCreature = locationOfInputOnCreature;
+            this.rotationOfInput = rotationOfInput;
             this.color = color;
 
             //create neural network
@@ -57,7 +59,12 @@ namespace Project_Neural_Selection_3
         //simulate creature
         public Boolean SimulateCreature()
         {
-            Boolean remove = false;
+            //creature needs
+            food--;
+            if (food <= 0)
+            {
+                return true;
+            }
 
             //get sensory input
             List<int> sensoryInput = new List<int>();
@@ -65,24 +72,91 @@ namespace Project_Neural_Selection_3
             {
                 if (input == CreatureInputs.Eye)
                 {
-                    
+                    int eyeX = 0;
+                    int eyeY = 0;
+
+                    sensoryInput.Add(getInputFromEye(eyeX, eyeY).ToArgb());
                 }
             }
 
             //simulate neural network
-            
+            float[] finalOutputs = new float[neuralNetwork[neuralNetwork.Length - 1].Count];
+
+            float[] outputsFromLastLayer = new float[sensoryInput.Count];
+            for (int i = 0; i < sensoryInput.Count; i++)
+            {
+                outputsFromLastLayer[i] = sensoryInput[i];
+            }
+
+            foreach (List<Perceptron> layer in neuralNetwork)
+            {
+                float[] outputsFromLastLayerBuffer = new float[layer.Count];
+
+                for (int index = 0; index < layer.Count; index++)
+                {
+                    Perceptron p = layer[index];
+
+                    float returnValue = p.output(outputsFromLastLayer);
+
+                    outputsFromLastLayerBuffer[index] = returnValue;
+                }
+
+                outputsFromLastLayer = outputsFromLastLayerBuffer;
+            }
+
+            finalOutputs = outputsFromLastLayer;
 
             //train neural network
 
 
             //move creaure based on output from neural network
+            int rotateLeft = (int)finalOutputs[0];
+            int move = (int)finalOutputs[1];
+            int rotateRight = (int)finalOutputs[2];
 
-            
-            //handle hitbox with food/other creautres
+            if (rotateLeft == 1)
+            {
+                rotation -= 10;
+            }
+            if(rotateRight == 1)
+            {
+                rotation += 10;
+            }
+            if (move == 1)
+            {
+                float rotationX = (float)Math.Cos(rotation);
+                float rotationY = (float)Math.Sin(rotation);
 
+                x += Game.creatureSpeed * rotationX;
+                y += Game.creatureSpeed * rotationY;
+            }
+            //handle hitbox with food/other creautres/walls
+            RectangleF creatureHitbox = new RectangleF(x, y, Game.creatureSize, Game.creatureSize);
+
+            //food
+            List<int> foodToRemove = new List<int>();
+
+            foreach (Food f in Game.food)
+            {
+                RectangleF foodHitbox = new RectangleF(f.x, f.y, 3, 3);
+
+                if (creatureHitbox.IntersectsWith(foodHitbox))
+                {
+                    food += 15;
+                    foodToRemove.Add(Game.food.IndexOf(f));
+                }
+            }
+
+            foodToRemove.Sort();
+            foodToRemove.Reverse();
+
+            foreach (int index in foodToRemove)
+            {
+                Game.food.RemoveAt(index);
+            }
 
             //return wheather or not to remove creature
-            return remove;
+            return false;
         }
 
 
