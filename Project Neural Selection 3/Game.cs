@@ -12,14 +12,14 @@ namespace Project_Neural_Selection_3
         public static MouseHandler mouse { get; set; } = new MouseHandler();
 
         int physicsSpeed = 20;
-        int baseAmountOfCreatures = 30;
+        int baseAmountOfCreatures = 20;
         int amountOfFood = 2000;
 
         public static List<Food> food = new List<Food>();
 
         public static List<Creature> creatures { get; set; } = new List<Creature>();
         public static int creatureSize { get; } = 15;
-        public static int creatureMutationRate { get; } = 3;
+        public static int creatureMutationRate { get; } = 5;
         public static int creatureSpeed { get; } = 5;
 
         public static float learningRate { get; } = 0.01F;
@@ -92,14 +92,14 @@ namespace Project_Neural_Selection_3
             Graphics g = e.Graphics;
             int width = creatureStatsCanvas.Width;
             int height = creatureStatsCanvas.Height;
-            Font fontSmall = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold);
+            Font fontSmall = new Font(FontFamily.GenericSansSerif, 7, FontStyle.Bold);
 
             if (selectedCreature != -1 && selectedCreature < creatures.Count)
             {
                 Creature c = creatures[selectedCreature];
                 List<Perceptron>[] neuralNetwork = c.neuralNetwork;
 
-                int y = height / 2;
+                int y = height / 2 + 125;
                 for (int layerIndex = 0; layerIndex < neuralNetwork.Length; layerIndex++)
                 {
                     List<Perceptron> layer = neuralNetwork[layerIndex];
@@ -134,6 +134,15 @@ namespace Project_Neural_Selection_3
         //simulate physics
         private void simulatePhysics()
         {
+            //add more food
+            if (food.Count < 3500)
+            {
+                for (int i = 0; i < r.Next(50, 75); i++)
+                {
+                    food.Add(new Food(r.Next(0, canvas.Width), r.Next(0, canvas.Height)));
+                }
+            }
+
             //simulate creatures
             List<int> creaturesToRemove = new List<int>();
             List<Creature> creaturesToAdd = new List<Creature>();

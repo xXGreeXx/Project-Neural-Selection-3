@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Project_Neural_Selection_3
 {
@@ -49,14 +50,14 @@ namespace Project_Neural_Selection_3
 
             for (int i = 0; i < baseLayer * 2; i++)
             {
-                neuralNetwork[1].Add(new Perceptron(baseLayer, baseLayer * 2));
+                neuralNetwork[1].Add(new Perceptron(baseLayer, baseLayer * 2 + 1));
                 neuralNetwork[4].Add(new Perceptron(baseLayer * 2 + 1, 3));
             }
 
             for (int i = 0; i < baseLayer * 2 + 1; i++)
             {
                 neuralNetwork[2].Add(new Perceptron(baseLayer * 2, baseLayer * 2 + 1));
-                neuralNetwork[3].Add(new Perceptron(baseLayer * 2 + 1, 3));
+                neuralNetwork[3].Add(new Perceptron(baseLayer * 2 + 1, baseLayer * 2));
             }
 
             neuralNetwork[5].Add(new Perceptron(baseLayer * 2, 1));
@@ -79,10 +80,12 @@ namespace Project_Neural_Selection_3
             }
 
             //mitosis
-            if (food >= 50)
+            if (food >= 75)
             {
                 food /= 2;
                 Creature copy = new Creature(x - Game.creatureSize, y - Game.creatureSize, inputs, rotationOfInput, color);
+
+                copy.food = 20;
 
                 for (int layerIndex = 0; layerIndex < copy.neuralNetwork.Length; layerIndex++)
                 {
@@ -190,7 +193,7 @@ namespace Project_Neural_Selection_3
                 if (creatureHitbox.IntersectsWith(foodHitbox))
                 {
                     gotFood = true;
-                    food += 15;
+                    food += 30;
                     foodToRemove.Add(Game.food.IndexOf(f));
                 }
             }
@@ -244,8 +247,8 @@ namespace Project_Neural_Selection_3
         {
             Color colorToReturn = Color.White;
 
-            float rotationX = (float)(Math.Cos(rotation) * 30);
-            float rotationY = (float)(Math.Sin(rotation) * 30);
+            float selfRotationX = (float)(Math.Cos(rotation + rotationOfEye) * Game.creatureSize / 2) + Game.creatureSize / 2;
+            float selfRotationY = (float)(Math.Sin(rotation + rotationOfEye) * Game.creatureSize / 2) + Game.creatureSize / 2;
 
             //define lists of objects/colors to check
             List<Rectangle> objects = new List<Rectangle>();
@@ -256,9 +259,9 @@ namespace Project_Neural_Selection_3
             foreach (Creature c in Game.creatures) { objects.Add(new Rectangle((int)c.x, (int)c.y, 3, 3)); matchingColors.Add(c.color); }
 
             int index = 0;
-            foreach (Rectangle hitbox in objects)
+            foreach (Rectangle hitbox in sortRectanglesAroundPoint(objects, new Point((int)xOfEye, (int)yOfEye)))
             {
-                Boolean linePassedObject = LineIntersectsRect(new Point((int)xOfEye, (int)yOfEye), new Point((int)xOfEye + (int)rotationX, (int)yOfEye + (int)rotationY), hitbox);
+                Boolean linePassedObject = LineIntersectsRect(new Point((int)x + (int)selfRotationX, (int)y + (int)selfRotationY), new Point((int)x + (int)selfRotationX * 10, (int)y + (int)selfRotationY * 10), hitbox);
 
                 if (linePassedObject)
                 {
@@ -270,6 +273,12 @@ namespace Project_Neural_Selection_3
             }
 
             return colorToReturn;
+        }
+
+        //sort rectangle closest to point
+        private List<Rectangle> sortRectanglesAroundPoint(List<Rectangle> baseListOfRectangles, Point basePoint)
+        {
+            return baseListOfRectangles.OrderBy(r => r.X - basePoint.X).ThenBy(r => r.Y - basePoint.Y).ToList();
         }
 
         //line intersects rectangle
