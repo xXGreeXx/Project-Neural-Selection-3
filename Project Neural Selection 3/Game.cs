@@ -26,6 +26,8 @@ namespace Project_Neural_Selection_3
         public static Random r { get; } = new Random();
         public static int selectedCreature { get; set; } = 0;
 
+        public static String gameState { get; set; } = "splash";
+
         //constructor
         public Game()
         {
@@ -84,7 +86,14 @@ namespace Project_Neural_Selection_3
             int width = canvas.Width;
             int height = canvas.Height;
 
-            renderer.DrawScreen(g, width, height);
+            if (gameState.Equals("game"))
+            {
+                renderer.DrawScreen(g, width, height);
+            }
+            else if (gameState.Equals("splash"))
+            {
+                renderer.SplashScreen(g, width, height);
+            }
         }
 
         //update stats on loaded creature
@@ -144,7 +153,10 @@ namespace Project_Neural_Selection_3
         //call physics engine
         private void physicsTimer_Tick(object sender, EventArgs e)
         {
-            simulatePhysics();
+            if (gameState.Equals("game"))
+            {
+                simulatePhysics();
+            }
         }
 
         //simulate physics
