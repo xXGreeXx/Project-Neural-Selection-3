@@ -36,7 +36,7 @@ namespace Project_Neural_Selection_3
         }
 
         //define train
-        public void train(float[] inputs, int target)
+        public void train(float[] inputs, float target)
         {
             float returnValue = output(inputs);
             float error = target - returnValue;

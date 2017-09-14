@@ -12,17 +12,17 @@ namespace Project_Neural_Selection_3
         public static MouseHandler mouse { get; set; } = new MouseHandler();
 
         int physicsSpeed = 20;
-        int baseAmountOfCreatures = 20;
+        int baseAmountOfCreatures = 15;
         int amountOfFood = 2000;
 
         public static List<Food> food = new List<Food>();
 
         public static List<Creature> creatures { get; set; } = new List<Creature>();
         public static int creatureSize { get; } = 15;
-        public static int creatureMutationRate { get; } = 5;
+        public static int creatureMutationRate { get; } = 10;
         public static int creatureSpeed { get; } = 5;
 
-        public static float learningRate { get; } = 0.01F;
+        public static float learningRate { get; } = 0.05F;
         public static Random r { get; } = new Random();
         public static int selectedCreature { get; set; } = 0;
 
@@ -70,6 +70,7 @@ namespace Project_Neural_Selection_3
         //render timer tick
         private void renderTimer_Tick(object sender, EventArgs e)
         {
+            physicsSpeed = speedBar.Value;
             physicsTimer.Interval = 1000 / physicsSpeed;
 
             canvas.Refresh();
@@ -97,6 +98,13 @@ namespace Project_Neural_Selection_3
             if (selectedCreature != -1 && selectedCreature < creatures.Count)
             {
                 Creature c = creatures[selectedCreature];
+
+                //draw stats
+                g.DrawString("Food:" + c.food, fontSmall, Brushes.Black, 0, height / 2 + 20);
+                g.DrawString("Age:" + c.age, fontSmall, Brushes.Black, 0, height / 2 + 30);
+                g.DrawString("Reproduction Value:" + c.reproductionValue, fontSmall, Brushes.Black, 0, height / 2 + 40);
+
+                //draw neural network
                 List<Perceptron>[] neuralNetwork = c.neuralNetwork;
 
                 int y = height / 2 + 125;

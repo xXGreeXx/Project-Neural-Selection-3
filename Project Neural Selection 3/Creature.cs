@@ -17,6 +17,8 @@ namespace Project_Neural_Selection_3
         public List<Perceptron>[] neuralNetwork;
 
         public int food { get; set; } = 50;
+        public int age { get; set; } = 0;
+        public int reproductionValue { get; set; } = 0;
 
         //enums
         public enum CreatureInputs
@@ -68,22 +70,33 @@ namespace Project_Neural_Selection_3
         //simulate creature
         public Boolean SimulateCreature(int width, int height, out List<Creature> creaturesToAdd)
         {
-            int target = 1;
+            float target = 1;
 
             creaturesToAdd = new List<Creature>();
 
             //creature needs
             food--;
-            if (food <= 0)
-            {
-                return true;
-            }
+            if (food <= 0) return true;
+
+            age += Game.r.Next(0, 2);
+            if (age >= 100) return true;
+
+            reproductionValue++;
 
             //mitosis
-            if (food >= 75)
+            if (food >= 75 && reproductionValue >= 50)
             {
                 food /= 2;
+                reproductionValue = 0;
+
                 Creature copy = new Creature(x - Game.creatureSize, y - Game.creatureSize, inputs, rotationOfInput, color);
+
+                copy.rotationOfInput = new List<int>();
+
+                for (int i2 = 0; i2 < copy.inputs.Count; i2++)
+                {
+                    copy.rotationOfInput.Add(Game.r.Next(0, 361));
+                }
 
                 copy.food = 20;
 
@@ -99,7 +112,7 @@ namespace Project_Neural_Selection_3
 
                             if (number <= Game.creatureMutationRate)
                             {
-                                copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = Game.r.Next(-1, 1);
+                                copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = (float)Game.r.NextDouble() * Game.r.Next(-1, 2);
                             }
                             else
                             {
@@ -125,7 +138,9 @@ namespace Project_Neural_Selection_3
 
                 if (input == CreatureInputs.Eye)
                 {
-                    sensoryInput.Add(getInputFromEye(inputX, inputY, rotationOfInput[inputs.IndexOf(input)]).ToArgb());
+                    Color c = getInputFromEye(inputX, inputY, rotationOfInput[inputs.IndexOf(input)]);
+
+                    sensoryInput.Add(c.ToArgb());
                 }
 
                 indexOfInput++;
@@ -193,7 +208,7 @@ namespace Project_Neural_Selection_3
                 if (creatureHitbox.IntersectsWith(foodHitbox))
                 {
                     gotFood = true;
-                    food += 30;
+                    food += 15;
                     foodToRemove.Add(Game.food.IndexOf(f));
                 }
             }

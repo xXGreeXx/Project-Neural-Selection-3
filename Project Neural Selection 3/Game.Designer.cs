@@ -34,8 +34,10 @@
             this.renderTimer = new System.Windows.Forms.Timer(this.components);
             this.physicsTimer = new System.Windows.Forms.Timer(this.components);
             this.creatureStatsCanvas = new System.Windows.Forms.PictureBox();
+            this.speedBar = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.creatureStatsCanvas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.speedBar)).BeginInit();
             this.SuspendLayout();
             // 
             // canvas
@@ -69,11 +71,23 @@
             this.creatureStatsCanvas.TabStop = false;
             this.creatureStatsCanvas.Paint += new System.Windows.Forms.PaintEventHandler(this.creatureStatsCanvas_Paint);
             // 
+            // speedBar
+            // 
+            this.speedBar.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.speedBar.Location = new System.Drawing.Point(1062, 0);
+            this.speedBar.Maximum = 100;
+            this.speedBar.Minimum = 1;
+            this.speedBar.Name = "speedBar";
+            this.speedBar.Size = new System.Drawing.Size(272, 45);
+            this.speedBar.TabIndex = 2;
+            this.speedBar.Value = 20;
+            // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1332, 743);
+            this.Controls.Add(this.speedBar);
             this.Controls.Add(this.creatureStatsCanvas);
             this.Controls.Add(this.canvas);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -81,7 +95,9 @@
             this.Text = "Project: Neural Selection 3";
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.creatureStatsCanvas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.speedBar)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -91,6 +107,7 @@
         private System.Windows.Forms.Timer renderTimer;
         private System.Windows.Forms.Timer physicsTimer;
         private System.Windows.Forms.PictureBox creatureStatsCanvas;
+        private System.Windows.Forms.TrackBar speedBar;
     }
 }
 
