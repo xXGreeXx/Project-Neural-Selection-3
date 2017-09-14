@@ -177,10 +177,7 @@ namespace Project_Neural_Selection_3
 
             foreach (Creature c in creatures)
             {
-                List<Creature> creaturesToAddBuffer = new List<Creature>();
-                Boolean remove = c.SimulateCreature(canvas.Width, canvas.Height, out creaturesToAdd);
-
-                foreach(Creature c2 in creaturesToAddBuffer) { creaturesToAdd.Add(c2); }
+                Boolean remove = c.SimulateCreature(canvas.Width, canvas.Height, ref creaturesToAdd, ref creaturesToRemove);
 
                 if (remove) creaturesToRemove.Add(creatures.IndexOf(c));
             }

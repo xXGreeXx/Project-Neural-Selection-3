@@ -19,6 +19,7 @@ namespace Project_Neural_Selection_3
         public int food { get; set; } = 50;
         public int age { get; set; } = 0;
         public int reproductionValue { get; set; } = 0;
+        public int strength { get; set; }
 
         //enums
         public enum CreatureInputs
@@ -34,6 +35,7 @@ namespace Project_Neural_Selection_3
             this.inputs = inputs;
             this.rotationOfInput = rotationOfInput;
             this.color = color;
+            this.strength = Game.r.Next(10, 20);
 
             //create neural network
             neuralNetwork = new List<Perceptron>[6];
@@ -68,11 +70,9 @@ namespace Project_Neural_Selection_3
         }
 
         //simulate creature
-        public Boolean SimulateCreature(int width, int height, out List<Creature> creaturesToAdd)
+        public Boolean SimulateCreature(int width, int height, ref List<Creature> creaturesToAdd, ref List<int> creaturesToRemove)
         {
             float target = 1;
-
-            creaturesToAdd = new List<Creature>();
 
             //creature needs
             food--;
@@ -84,7 +84,7 @@ namespace Project_Neural_Selection_3
             reproductionValue++;
 
             //mitosis
-            if (food >= 75 && reproductionValue >= 50)
+            if (food >= 150 && reproductionValue >= 50)
             {
                 food /= 2;
                 reproductionValue = 0;
@@ -208,7 +208,7 @@ namespace Project_Neural_Selection_3
                 if (creatureHitbox.IntersectsWith(foodHitbox))
                 {
                     gotFood = true;
-                    food += 15;
+                    food += 10;
                     foodToRemove.Add(Game.food.IndexOf(f));
                 }
             }
@@ -228,6 +228,27 @@ namespace Project_Neural_Selection_3
             if (x >= width - Game.creatureSize) x = width - Game.creatureSize;
             if (y <= 0) y = 0;
             if (y >= height - Game.creatureSize) y = height - Game.creatureSize;
+
+            //other creatures
+            foreach (Creature c in Game.creatures)
+            {
+                RectangleF creature2Hitbox = new RectangleF(c.x, c.y, Game.creatureSize, Game.creatureSize);
+
+                if (creatureHitbox.IntersectsWith(creature2Hitbox) && c != this && c.color != color)
+                {
+                    if (c.strength < strength)
+                    {
+                        creaturesToRemove.Add(Game.creatures.IndexOf(c));
+                        food -= c.strength;
+                        break;
+                    }
+                    else
+                    {
+                        c.food -= strength;
+                        return true;
+                    }
+                }
+            }
 
             //train neural network
             outputsFromLastLayer = new float[sensoryInput.Count];
