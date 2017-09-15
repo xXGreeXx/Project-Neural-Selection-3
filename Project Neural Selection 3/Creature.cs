@@ -113,8 +113,9 @@ namespace Project_Neural_Selection_3
                             }
                         }
                     }
-                } 
+                }
 
+                target += 0.1F;
                 creaturesToAdd.Add(copy);
             }
 
@@ -201,13 +202,13 @@ namespace Project_Neural_Selection_3
                 if (creatureHitbox.IntersectsWith(foodHitbox))
                 {
                     gotFood = true;
-                    food += 10;
+                    food += 15;
                     foodToRemove.Add(Game.food.IndexOf(f));
                 }
             }
 
-            if (!gotFood) target = -1;
-
+            if (!gotFood) target -= 0.1F;
+            
             foodToRemove.Sort();
             foodToRemove.Reverse();
 
@@ -217,10 +218,10 @@ namespace Project_Neural_Selection_3
             }
 
             //wall
-            if (x <= 0) x = 0;
-            if (x >= width - Game.creatureSize) x = width - Game.creatureSize;
-            if (y <= 0) y = 0;
-            if (y >= height - Game.creatureSize) y = height - Game.creatureSize;
+            if (x <= 0) x = 0; target -= 0.1F;
+            if (x >= width - Game.creatureSize) x = width - Game.creatureSize; target -= 0.1F;
+            if (y <= 0) y = 0; target -= 0.1F;
+            if (y >= height - Game.creatureSize) y = height - Game.creatureSize; target -= 0.1F;
 
             //other creatures
             foreach (Creature c in Game.creatures)
@@ -258,7 +259,7 @@ namespace Project_Neural_Selection_3
 
                             Creature newCreature = new Creature(c.x + Game.creatureSize / 2, c.y + Game.creatureSize / 2, inputsOfNewCreature, rotationsOfNewCreature, newColor);
 
-                            target = 1;
+                            target += 0.1F;
 
                             creaturesToAdd.Add(newCreature);
                         }
@@ -270,7 +271,7 @@ namespace Project_Neural_Selection_3
             outputsFromLastLayer = new float[sensoryInput.Count];
             for (int i = 0; i < sensoryInput.Count; i++)
             {
-                outputsFromLastLayer[i] = 1;
+                outputsFromLastLayer[i] = sensoryInput[i];
             }
 
             foreach (List<Perceptron> layer in neuralNetwork)

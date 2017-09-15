@@ -18,11 +18,11 @@ namespace Project_Neural_Selection_3
         public static List<Food> food = new List<Food>();
 
         public static List<Creature> creatures { get; set; } = new List<Creature>();
-        public static int creatureSize { get; } = 20;
+        public static int creatureSize { get; } = 15;
         public static int creatureMutationRate { get; } = 10;
         public static int creatureSpeed { get; } = 5;
 
-        public static float learningRate { get; } = 0.1F;
+        public static float learningRate { get; } = 0.01F;
         public static Random r { get; } = new Random();
         public static int selectedCreature { get; set; } = 0;
 
@@ -104,7 +104,7 @@ namespace Project_Neural_Selection_3
             int height = creatureStatsCanvas.Height;
             Font fontSmall = new Font(FontFamily.GenericSansSerif, 7, FontStyle.Bold);
 
-            if (selectedCreature != -1 && selectedCreature < creatures.Count)
+            if (selectedCreature != -1 && selectedCreature < creatures.Count && gameState.Equals("game"))
             {
                 Creature c = creatures[selectedCreature];
 
