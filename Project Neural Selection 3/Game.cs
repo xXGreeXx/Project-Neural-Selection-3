@@ -12,17 +12,17 @@ namespace Project_Neural_Selection_3
         public static MouseHandler mouse { get; set; } = new MouseHandler();
 
         int physicsSpeed = 20;
-        int baseAmountOfCreatures = 15;
+        int baseAmountOfCreatures = 10;
         int amountOfFood = 2000;
 
         public static List<Food> food = new List<Food>();
 
         public static List<Creature> creatures { get; set; } = new List<Creature>();
-        public static int creatureSize { get; } = 15;
+        public static int creatureSize { get; } = 20;
         public static int creatureMutationRate { get; } = 10;
         public static int creatureSpeed { get; } = 5;
 
-        public static float learningRate { get; } = 0.05F;
+        public static float learningRate { get; } = 0.1F;
         public static Random r { get; } = new Random();
         public static int selectedCreature { get; set; } = 0;
 
@@ -191,7 +191,10 @@ namespace Project_Neural_Selection_3
 
             foreach (int index in creaturesToRemove)
             {
-                creatures.RemoveAt(index);
+                if (index < creatures.Count)
+                {
+                    creatures.RemoveAt(index);
+                }
             }
 
             selectedCreature = creatures.IndexOf(oldCreatureSelected);

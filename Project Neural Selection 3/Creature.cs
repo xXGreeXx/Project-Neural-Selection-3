@@ -91,13 +91,6 @@ namespace Project_Neural_Selection_3
 
                 Creature copy = new Creature(x - Game.creatureSize, y - Game.creatureSize, inputs, rotationOfInput, color);
 
-                copy.rotationOfInput = new List<int>();
-
-                for (int i2 = 0; i2 < copy.inputs.Count; i2++)
-                {
-                    copy.rotationOfInput.Add(Game.r.Next(0, 361));
-                }
-
                 copy.food = 20;
 
                 for (int layerIndex = 0; layerIndex < copy.neuralNetwork.Length; layerIndex++)
@@ -234,18 +227,41 @@ namespace Project_Neural_Selection_3
             {
                 RectangleF creature2Hitbox = new RectangleF(c.x, c.y, Game.creatureSize, Game.creatureSize);
 
-                if (creatureHitbox.IntersectsWith(creature2Hitbox) && c != this && c.color != color)
+                if (creatureHitbox.IntersectsWith(creature2Hitbox) && c != this)
                 {
-                    if (c.strength < strength)
+                    if (color != c.color)
                     {
-                        creaturesToRemove.Add(Game.creatures.IndexOf(c));
-                        food -= c.strength;
-                        break;
+                        if (c.strength < strength)
+                        {
+                            creaturesToRemove.Add(Game.creatures.IndexOf(c));
+                            food -= c.strength;
+                            break;
+                        }
+                        else
+                        {
+                            c.food -= strength;
+                            return true;
+                        }
                     }
                     else
                     {
-                        c.food -= strength;
-                        return true;
+                        //meiosis
+                        if (c.reproductionValue >= 30 && reproductionValue >= 30)
+                        {
+                            c.reproductionValue = 0;
+                            reproductionValue = 0;
+
+                            List<CreatureInputs> inputsOfNewCreature = c.inputs;
+                            List<int> rotationsOfNewCreature = c.rotationOfInput;
+
+                            Color newColor = Color.FromArgb(255, (color.R + c.color.R) / 2, (color.G + c.color.G) / 2, (color.B + c.color.B) / 2);
+
+                            Creature newCreature = new Creature(c.x + Game.creatureSize / 2, c.y + Game.creatureSize / 2, inputsOfNewCreature, rotationsOfNewCreature, newColor);
+
+                            target = 1;
+
+                            creaturesToAdd.Add(newCreature);
+                        }
                     }
                 }
             }
@@ -274,7 +290,7 @@ namespace Project_Neural_Selection_3
                 outputsFromLastLayer = outputsFromLastLayerBuffer;
             }
 
-            //return wheather or not to remove creature
+            //return whether or not to remove creature
             return false;
         }
 

@@ -22,7 +22,7 @@ namespace Project_Neural_Selection_3
                 Color c = backgroundBase.GetPixel(x, y);
                 if (!c.Equals(Color.FromArgb(255, 255, 255, 255)))
                 {
-                    particles.Add(new Particle(x, y, c, 35));
+                    particles.Add(new Particle(x, y, c, 20));
                 }
 
                 x++;
@@ -99,7 +99,7 @@ namespace Project_Neural_Selection_3
             {
                 g.FillRectangle(new SolidBrush(p.color), baseX + p.x, baseY + p.y, 1, 1);
 
-                if (p.life <= 20)
+                if (p.life <= 10)
                 {
                     p.x += (int)(Math.Cos(i) * 2.5) + Game.r.Next(-4, 5);
                     p.y += (int)(Math.Sin(i) * 2.5) + Game.r.Next(-4, 5);
