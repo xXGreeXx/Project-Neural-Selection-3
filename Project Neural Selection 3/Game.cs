@@ -128,8 +128,8 @@ namespace Project_Neural_Selection_3
                     {
                         g.FillRectangle(Brushes.DarkGray, x, y, 20, 20);
 
-                        int x2 = width / 2 - (p.weights.Length * 30) / 2;
-                        for (int i = 0; i < p.weights.Length; i++)
+                        int x2 = width / 2 - ((p.weights.Length - 1) * 30) / 2;
+                        for (int i = 0; i < p.weights.Length - 1; i++)
                         {
                             if (layerIndex > 0)
                             {
@@ -164,9 +164,9 @@ namespace Project_Neural_Selection_3
         private void simulatePhysics()
         {
             //add more food
-            if (food.Count < 3500)
+            if (food.Count < 4000)
             {
-                for (int i = 0; i < r.Next(50, 75); i++)
+                for (int i = 0; i < r.Next(25, 50); i++)
                 {
                     food.Add(new Food(r.Next(0, canvas.Width), r.Next(0, canvas.Height)));
                 }

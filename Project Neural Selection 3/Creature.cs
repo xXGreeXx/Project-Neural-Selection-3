@@ -93,7 +93,7 @@ namespace Project_Neural_Selection_3
             reproductionValue++;
 
             //mitosis
-            if (food >= 150 && reproductionValue >= 50)
+            if (food >= 150 && reproductionValue >= 25)
             {
                 food /= 2;
                 reproductionValue = 0;
@@ -256,20 +256,20 @@ namespace Project_Neural_Selection_3
                             c.health -= strength;
                             target += 0.1F;
 
-                            c.x += (float)(Math.Cos(c.rotation) * Game.creatureSize) * 2;
-                            c.y += (float)(Math.Sin(c.rotation) * Game.creatureSize) * 2;
-                            x += (float)(Math.Cos(rotation) * Game.creatureSize) * 2;
-                            y += (float)(Math.Sin(rotation) * Game.creatureSize) * 2;
+                            c.x += (float)(Math.Cos(c.rotation) * Game.creatureSize);
+                            c.y += (float)(Math.Sin(c.rotation) * Game.creatureSize);
+                            x += (float)(Math.Cos(rotation) * Game.creatureSize);
+                            y += (float)(Math.Sin(rotation) * Game.creatureSize);
                         }
                         else
                         {
                             health -= c.strength;
                             target -= 0.1F;
 
-                            x += (float)(Math.Cos(rotation) * Game.creatureSize) * 2;
-                            y += (float)(Math.Sin(rotation) * Game.creatureSize) * 2;
-                            c.x += (float)(Math.Cos(c.rotation) * Game.creatureSize) * 2;
-                            c.y += (float)(Math.Sin(c.rotation) * Game.creatureSize) * 2;
+                            x += (float)(Math.Cos(rotation) * Game.creatureSize);
+                            y += (float)(Math.Sin(rotation) * Game.creatureSize);
+                            c.x += (float)(Math.Cos(c.rotation) * Game.creatureSize);
+                            c.y += (float)(Math.Sin(c.rotation) * Game.creatureSize);
                         }
                     }
                     else
@@ -337,7 +337,7 @@ namespace Project_Neural_Selection_3
 
             //add food to objects
             foreach(Food f in Game.food) { objects.Add(new Rectangle(f.x, f.y, 3, 3)); matchingColors.Add(Color.Green); }
-            foreach (Creature c in Game.creatures) { objects.Add(new Rectangle((int)c.x, (int)c.y, 3, 3)); matchingColors.Add(c.color); }
+            foreach (Creature c in Game.creatures) { objects.Add(new Rectangle((int)c.x, (int)c.y, 3, 3)); matchingColors.Add(c.red ? Color.Red : c.color); }
 
             int index = 0;
             foreach (Rectangle hitbox in sortRectanglesAroundPoint(objects, new Point((int)xOfEye, (int)yOfEye)))

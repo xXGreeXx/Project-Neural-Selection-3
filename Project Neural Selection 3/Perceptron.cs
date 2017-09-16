@@ -12,7 +12,7 @@ namespace Project_Neural_Selection_3
         //constructor
         public Perceptron(int inputs, int outputs)
         {
-            weights = new float[inputs];
+            weights = new float[inputs + 1];
 
             for (int i = 0; i < weights.Length; i++)
             {
@@ -27,10 +27,12 @@ namespace Project_Neural_Selection_3
         {
             float answer = 0;
 
-            for (int i = 0; i < weights.Length; i++)
+            for (int i = 0; i < inputs.Length; i++)
             {
                 answer += (inputs[i] * weights[i]);
             }
+
+            answer += (1 * weights[weights.Length - 1]);
 
             return activation(answer);
         }
@@ -45,6 +47,8 @@ namespace Project_Neural_Selection_3
             {
                 weights[i] += error * inputs[i] * Game.learningRate;
             }
+
+            weights[weights.Length - 1] += error * Game.learningRate;
         }
 
         //define activation function
