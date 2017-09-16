@@ -109,6 +109,7 @@ namespace Project_Neural_Selection_3
                 Creature c = creatures[selectedCreature];
 
                 //draw stats
+                g.DrawString("Health:" + c.health, fontSmall, Brushes.Black, 0, height / 2 + 10);
                 g.DrawString("Food:" + c.food, fontSmall, Brushes.Black, 0, height / 2 + 20);
                 g.DrawString("Age:" + c.age, fontSmall, Brushes.Black, 0, height / 2 + 30);
                 g.DrawString("Reproduction Value:" + c.reproductionValue, fontSmall, Brushes.Black, 0, height / 2 + 40);
@@ -116,7 +117,7 @@ namespace Project_Neural_Selection_3
                 //draw neural network
                 List<Perceptron>[] neuralNetwork = c.neuralNetwork;
 
-                int y = height / 2 + 125;
+                int y = height / 2 + 80;
                 for (int layerIndex = 0; layerIndex < neuralNetwork.Length; layerIndex++)
                 {
                     List<Perceptron> layer = neuralNetwork[layerIndex];

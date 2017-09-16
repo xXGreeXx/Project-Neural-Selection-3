@@ -46,6 +46,8 @@ namespace Project_Neural_Selection_3
                 float baseY = c.y;
                 Brush brush = new SolidBrush(c.color);
 
+                if (c.red) brush = new SolidBrush(Color.Red);
+
                 g.FillEllipse(brush, baseX, baseY, Game.creatureSize, Game.creatureSize);
 
                 int index = 0;

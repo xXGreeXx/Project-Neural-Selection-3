@@ -20,6 +20,9 @@ namespace Project_Neural_Selection_3
         public int age { get; set; } = 0;
         public int reproductionValue { get; set; } = 0;
         public int strength { get; set; }
+        public int health { get; set; } = 100;
+
+        public Boolean red { get; set; } = false;
 
         //enums
         public enum CreatureInputs
@@ -38,13 +41,14 @@ namespace Project_Neural_Selection_3
             this.strength = Game.r.Next(10, 20);
 
             //create neural network
-            neuralNetwork = new List<Perceptron>[6];
+            neuralNetwork = new List<Perceptron>[7];
             neuralNetwork[0] = new List<Perceptron>();
             neuralNetwork[1] = new List<Perceptron>();
             neuralNetwork[2] = new List<Perceptron>();
             neuralNetwork[3] = new List<Perceptron>();
             neuralNetwork[4] = new List<Perceptron>();
             neuralNetwork[5] = new List<Perceptron>();
+            neuralNetwork[6] = new List<Perceptron>();
 
             int baseLayer = inputs.Count;
             for (int i = 0; i < baseLayer; i++)
@@ -55,18 +59,20 @@ namespace Project_Neural_Selection_3
             for (int i = 0; i < baseLayer * 2; i++)
             {
                 neuralNetwork[1].Add(new Perceptron(baseLayer, baseLayer * 2 + 1));
-                neuralNetwork[4].Add(new Perceptron(baseLayer * 2 + 1, 3));
+                neuralNetwork[5].Add(new Perceptron(baseLayer * 2 + 1, 4));
             }
 
             for (int i = 0; i < baseLayer * 2 + 1; i++)
             {
                 neuralNetwork[2].Add(new Perceptron(baseLayer * 2, baseLayer * 2 + 1));
-                neuralNetwork[3].Add(new Perceptron(baseLayer * 2 + 1, baseLayer * 2));
+                neuralNetwork[3].Add(new Perceptron(baseLayer * 2 + 1, baseLayer * 2 + 1));
+                neuralNetwork[4].Add(new Perceptron(baseLayer * 2 + 1, baseLayer * 2));
             }
 
-            neuralNetwork[5].Add(new Perceptron(baseLayer * 2, 1));
-            neuralNetwork[5].Add(new Perceptron(baseLayer * 2, 1));
-            neuralNetwork[5].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[6].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[6].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[6].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[6].Add(new Perceptron(baseLayer * 2, 1));
         }
 
         //simulate creature
@@ -75,11 +81,14 @@ namespace Project_Neural_Selection_3
             float target = 1;
 
             //creature needs
-            food--;
-            if (food <= 0) return true;
+            if (food > 0) food--;
+            if (food <= 0) health--; target -= 0.1F;
 
-            age += Game.r.Next(0, 2);
-            if (age >= 100) return true;
+            age++;
+            if (age >= health + (food / strength)) return true;
+
+            if (health < 0) return true;
+            if (food >= 50 && health < 100) health++;
 
             reproductionValue++;
 
@@ -171,7 +180,17 @@ namespace Project_Neural_Selection_3
             int rotateLeft = (int)finalOutputs[0];
             int move = (int)finalOutputs[1];
             int rotateRight = (int)finalOutputs[2];
-            
+            int blinkRed = (int)finalOutputs[3];
+
+            if (blinkRed == 1)
+            {
+                red = true;
+            }
+            else
+            {
+                red = false;
+            }
+
             if (rotateLeft == 1)
             {
                 rotation -= 3;
@@ -234,14 +253,23 @@ namespace Project_Neural_Selection_3
                     {
                         if (c.strength < strength)
                         {
-                            creaturesToRemove.Add(Game.creatures.IndexOf(c));
-                            food -= c.strength;
-                            break;
+                            c.health -= strength;
+                            target += 0.1F;
+
+                            c.x += (float)(Math.Cos(c.rotation) * Game.creatureSize) * 2;
+                            c.y += (float)(Math.Sin(c.rotation) * Game.creatureSize) * 2;
+                            x += (float)(Math.Cos(rotation) * Game.creatureSize) * 2;
+                            y += (float)(Math.Sin(rotation) * Game.creatureSize) * 2;
                         }
                         else
                         {
-                            c.food -= strength;
-                            return true;
+                            health -= c.strength;
+                            target -= 0.1F;
+
+                            x += (float)(Math.Cos(rotation) * Game.creatureSize) * 2;
+                            y += (float)(Math.Sin(rotation) * Game.creatureSize) * 2;
+                            c.x += (float)(Math.Cos(c.rotation) * Game.creatureSize) * 2;
+                            c.y += (float)(Math.Sin(c.rotation) * Game.creatureSize) * 2;
                         }
                     }
                     else
@@ -271,7 +299,7 @@ namespace Project_Neural_Selection_3
             outputsFromLastLayer = new float[sensoryInput.Count];
             for (int i = 0; i < sensoryInput.Count; i++)
             {
-                outputsFromLastLayer[i] = sensoryInput[i];
+                outputsFromLastLayer[i] = neuralNetwork[0][0].activation(sensoryInput[i]);
             }
 
             foreach (List<Perceptron> layer in neuralNetwork)
