@@ -54,12 +54,7 @@ namespace Project_Neural_Selection_3
         //define activation function
         public float activation(float input)
         {
-            float output = 0;
-
-            if (input < 0) output = -1;
-            else output = 1;
-
-            return output;
+            return input >= 0 ? 1 : 0;
         }
     }
 }

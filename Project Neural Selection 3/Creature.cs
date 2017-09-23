@@ -17,7 +17,7 @@ namespace Project_Neural_Selection_3
         public List<Perceptron>[] neuralNetwork;
 
         public int food { get; set; } = 50;
-        public int age { get; set; } = 0;
+        public float age { get; set; } = 0;
         public int reproductionValue { get; set; } = 0;
         public int strength { get; set; }
         public int health { get; set; } = 100;
@@ -41,16 +41,12 @@ namespace Project_Neural_Selection_3
             this.strength = Game.r.Next(10, 20);
 
             //create neural network
-            neuralNetwork = new List<Perceptron>[7];
+            neuralNetwork = new List<Perceptron>[3];
             neuralNetwork[0] = new List<Perceptron>();
             neuralNetwork[1] = new List<Perceptron>();
             neuralNetwork[2] = new List<Perceptron>();
-            neuralNetwork[3] = new List<Perceptron>();
-            neuralNetwork[4] = new List<Perceptron>();
-            neuralNetwork[5] = new List<Perceptron>();
-            neuralNetwork[6] = new List<Perceptron>();
 
-            int baseLayer = inputs.Count;
+            int baseLayer = inputs.Count + 2;
             for (int i = 0; i < baseLayer; i++)
             {
                 neuralNetwork[0].Add(new Perceptron(baseLayer, baseLayer * 2));
@@ -59,20 +55,12 @@ namespace Project_Neural_Selection_3
             for (int i = 0; i < baseLayer * 2; i++)
             {
                 neuralNetwork[1].Add(new Perceptron(baseLayer, baseLayer * 2 + 1));
-                neuralNetwork[5].Add(new Perceptron(baseLayer * 2 + 1, 4));
             }
 
-            for (int i = 0; i < baseLayer * 2 + 1; i++)
-            {
-                neuralNetwork[2].Add(new Perceptron(baseLayer * 2, baseLayer * 2 + 1));
-                neuralNetwork[3].Add(new Perceptron(baseLayer * 2 + 1, baseLayer * 2 + 1));
-                neuralNetwork[4].Add(new Perceptron(baseLayer * 2 + 1, baseLayer * 2));
-            }
-
-            neuralNetwork[6].Add(new Perceptron(baseLayer * 2, 1));
-            neuralNetwork[6].Add(new Perceptron(baseLayer * 2, 1));
-            neuralNetwork[6].Add(new Perceptron(baseLayer * 2, 1));
-            neuralNetwork[6].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[2].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[2].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[2].Add(new Perceptron(baseLayer * 2, 1));
+            neuralNetwork[2].Add(new Perceptron(baseLayer * 2, 1));
         }
 
         //simulate creature
@@ -84,7 +72,7 @@ namespace Project_Neural_Selection_3
             if (food > 0) food--;
             if (food <= 0) health--; target -= 0.1F;
 
-            age++;
+            age += 0.5F;
             if (age >= health + (food / strength)) return true;
 
             if (health < 0) return true;
@@ -143,7 +131,7 @@ namespace Project_Neural_Selection_3
                 {
                     Color c = getInputFromEye(inputX, inputY, rotationOfInput[inputs.IndexOf(input)]);
 
-                    sensoryInput.Add(c.ToArgb());
+                    sensoryInput.Add(c.R);
                 }
 
                 indexOfInput++;
@@ -152,11 +140,14 @@ namespace Project_Neural_Selection_3
             //simulate neural network
             float[] finalOutputs = new float[neuralNetwork[neuralNetwork.Length - 1].Count];
 
-            float[] outputsFromLastLayer = new float[sensoryInput.Count];
+            float[] outputsFromLastLayer = new float[sensoryInput.Count + 2];
             for (int i = 0; i < sensoryInput.Count; i++)
             {
                 outputsFromLastLayer[i] = sensoryInput[i];
             }
+
+            outputsFromLastLayer[sensoryInput.Count] = health;
+            outputsFromLastLayer[sensoryInput.Count + 1] = food;
 
             foreach (List<Perceptron> layer in neuralNetwork)
             {
@@ -182,7 +173,7 @@ namespace Project_Neural_Selection_3
             int rotateRight = (int)finalOutputs[2];
             int blinkRed = (int)finalOutputs[3];
 
-            if (blinkRed == 1)
+            if (blinkRed > 0)
             {
                 red = true;
             }
@@ -191,15 +182,15 @@ namespace Project_Neural_Selection_3
                 red = false;
             }
 
-            if (rotateLeft == 1)
+            if (rotateLeft > 0)
             {
                 rotation -= 3;
             }
-            if(rotateRight == 1)
+            if(rotateRight > 0)
             {
                 rotation += 3;
             }
-            if (move == 1)
+            if (move > 0)
             {
                 float rotationX = (float)Math.Cos(rotation);
                 float rotationY = (float)Math.Sin(rotation);
@@ -249,7 +240,7 @@ namespace Project_Neural_Selection_3
 
                 if (creatureHitbox.IntersectsWith(creature2Hitbox) && c != this)
                 {
-                    if (color != c.color)
+                    if (color != c.color || c.strength != strength)
                     {
                         if (c.strength < strength)
                         {
