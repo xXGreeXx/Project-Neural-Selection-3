@@ -12,7 +12,8 @@ namespace Project_Neural_Selection_3
         public static MouseHandler mouse { get; set; } = new MouseHandler();
 
         int physicsSpeed = 20;
-        int baseAmountOfCreatures = 10;
+        int baseAmountOfSpecies = 5;
+        int creaturesForSpecies = 5;
         int amountOfFood = 2000;
 
         public static List<Food> food = new List<Food>();
@@ -53,7 +54,7 @@ namespace Project_Neural_Selection_3
             }
 
             //create creatures
-            for (int i = 0; i < baseAmountOfCreatures; i++)
+            for (int i = 0; i < baseAmountOfSpecies; i++)
             {
                 List<Creature.CreatureInputs> inputs = new List<Creature.CreatureInputs>();
                 List<int> rotationOfInput = new List<int>();
@@ -64,8 +65,13 @@ namespace Project_Neural_Selection_3
                     rotationOfInput.Add(r.Next(0, 361));
                 }
 
-                Creature c = new Creature((canvas.Width / baseAmountOfCreatures) * i, r.Next(30, canvas.Height), inputs, rotationOfInput, Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255)));
-                creatures.Add(c);
+                Color color = Color.FromArgb(255, r.Next(0, 255), r.Next(0, 255), r.Next(0, 255));
+                int pos = r.Next(30, canvas.Height);
+                for (int i2 = 0; i2 < creaturesForSpecies; i2++)
+                {
+                    Creature c = new Creature((canvas.Width / baseAmountOfSpecies) * i, pos + (creaturesForSpecies * i2), inputs, rotationOfInput, color);
+                    creatures.Add(c);
+                }
             }
         }
 

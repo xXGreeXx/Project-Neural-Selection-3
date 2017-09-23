@@ -81,40 +81,40 @@ namespace Project_Neural_Selection_3
             reproductionValue++;
 
             //mitosis
-            if (food >= 150 && reproductionValue >= 25)
-            {
-                food /= 2;
-                reproductionValue = 0;
+            //if (food >= 150 && reproductionValue >= 25)
+            //{
+            //    food /= 2;
+            //    reproductionValue = 0;
 
-                Creature copy = new Creature(x - Game.creatureSize, y - Game.creatureSize, inputs, rotationOfInput, color);
+            //    Creature copy = new Creature(x - Game.creatureSize, y - Game.creatureSize, inputs, rotationOfInput, color);
 
-                copy.food = 20;
+            //    copy.food = 20;
 
-                for (int layerIndex = 0; layerIndex < copy.neuralNetwork.Length; layerIndex++)
-                {
-                    List<Perceptron> layer = copy.neuralNetwork[layerIndex];
+            //    for (int layerIndex = 0; layerIndex < copy.neuralNetwork.Length; layerIndex++)
+            //    {
+            //        List<Perceptron> layer = copy.neuralNetwork[layerIndex];
 
-                    for (int perceptronIndex = 0; perceptronIndex < layer.Count; perceptronIndex++)
-                    {
-                        for (int weightIndex = 0; weightIndex < layer[perceptronIndex].weights.Length; weightIndex++)
-                        {
-                            int number = Game.r.Next(1, 101);
+            //        for (int perceptronIndex = 0; perceptronIndex < layer.Count; perceptronIndex++)
+            //        {
+            //            for (int weightIndex = 0; weightIndex < layer[perceptronIndex].weights.Length; weightIndex++)
+            //            {
+            //                int number = Game.r.Next(1, 101);
 
-                            if (number <= Game.creatureMutationRate)
-                            {
-                                copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = (float)Game.r.NextDouble() * Game.r.Next(-1, 2);
-                            }
-                            else
-                            {
-                                copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex];
-                            }
-                        }
-                    }
-                }
+            //                if (number <= Game.creatureMutationRate)
+            //                {
+            //                    copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = (float)Game.r.NextDouble() * Game.r.Next(-1, 2);
+            //                }
+            //                else
+            //                {
+            //                    copy.neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex] = neuralNetwork[layerIndex][perceptronIndex].weights[weightIndex];
+            //                }
+            //            }
+            //        }
+            //    }
 
-                target += 0.1F;
-                creaturesToAdd.Add(copy);
-            }
+            //    target += 0.1F;
+            //    creaturesToAdd.Add(copy);
+            //}
 
             //get sensory input
             List<int> sensoryInput = new List<int>();
@@ -240,7 +240,7 @@ namespace Project_Neural_Selection_3
 
                 if (creatureHitbox.IntersectsWith(creature2Hitbox) && c != this)
                 {
-                    if (color != c.color || c.strength != strength)
+                    if (color != c.color && c.strength != strength)
                     {
                         if (c.strength < strength)
                         {
@@ -266,7 +266,7 @@ namespace Project_Neural_Selection_3
                     else
                     {
                         //meiosis
-                        if (c.reproductionValue >= 30 && reproductionValue >= 30)
+                        if (c.reproductionValue >= 35 && reproductionValue >= 35)
                         {
                             c.reproductionValue = 0;
                             reproductionValue = 0;
